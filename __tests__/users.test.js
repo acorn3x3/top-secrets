@@ -1,10 +1,9 @@
 const pool = require('../lib/utils/pool');
 const setup = require('../data/setup');
-//const request = require('supertest');
 const app = require('../lib/app');
 const request = require('supertest');
 const UserService = require('../lib/services/UserService');
-//const UserService = require('../lib/services/UserService');
+const { User } = require('../lib/models/User');
 
 const sampleUser = {
   first_name: 'Test',
@@ -38,9 +37,30 @@ describe('users routes', () => {
     expect(resp.status).toEqual(200);
   });
 
-  it('GET /api/v1/users/protected should return a 401 if not authenticated', async () => {
-    const resp = await request(app).get('/api/v1/users/protected');
+  it('GET /api/v1/users/secrets should return a 401 if not authenticated', async () => {
+    const resp = await request(app).get('/api/v1/users/secrets');
     expect(resp.status).toEqual(401);
+  });
+
+  // it('GET /api/v1/users/secrets should return the current user if authenticated', async () => {
+  //   const agent = request.agent(app);
+  //   const user = await UserService.create({ ...sampleUser });
+
+  //   await agent
+  //     .post('/api/v1/users/secrets')
+  //     .send({ email: 'test2@test.com', password: '12345' });
+  //   const resp = await agent.get('api/v1/users/secrets');
+  //   expect(resp.status).toEqual(200);
+  // });
+  it('GET /api/v1/users/secrets should return the current user if auth', async () => {
+    const agent = request.agent(app);
+    const user = await UserService.create({ ...sampleUser });
+    console.log(user);
+    await agent
+      .post('/api/v1/users/sessions')
+      .send({ email: 'test2@test.com', password: '12345' });
+    const resp = await agent.get('/api/v1/users/secrets');
+    expect(resp.status).toEqual(200);
   });
 
   afterAll(() => {
