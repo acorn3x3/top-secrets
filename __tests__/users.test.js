@@ -57,6 +57,7 @@ describe('users routes', () => {
     const agent = request.agent(app);
     const user = await UserService.create({ ...sampleUser });
 
+    console.log(user);
     await agent
       .post('/api/v1/users/sessions')
       .send({ email: 'test2@test.com', password: '12345' });
