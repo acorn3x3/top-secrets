@@ -38,6 +38,11 @@ describe('users routes', () => {
     expect(resp.status).toEqual(200);
   });
 
+  it('GET /api/v1/users/protected should return a 401 if not authenticated', async () => {
+    const resp = await request(app).get('/api/v1/users/protected');
+    expect(resp.status).toEqual(401);
+  });
+
   afterAll(() => {
     pool.end();
   });
