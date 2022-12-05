@@ -11,6 +11,12 @@ const sampleUser = {
   email: 'test2@test.com',
   password: '12345',
 };
+const admin = {
+  first_name: 'admin',
+  last_name: 'admin',
+  email: 'admin',
+  password: 'admin',
+};
 
 describe('users routes', () => {
   beforeEach(() => {
@@ -42,20 +48,10 @@ describe('users routes', () => {
     expect(resp.status).toEqual(401);
   });
 
-  // it('GET /api/v1/users/secrets should return the current user if authenticated', async () => {
-  //   const agent = request.agent(app);
-  //   const user = await UserService.create({ ...sampleUser });
-
-  //   await agent
-  //     .post('/api/v1/users/secrets')
-  //     .send({ email: 'test2@test.com', password: '12345' });
-  //   const resp = await agent.get('api/v1/users/secrets');
-  //   expect(resp.status).toEqual(200);
-  // });
-  it('GET /api/v1/users/secrets should return the current user if auth', async () => {
+  it('GET /api/v1/users/secrets should return the current user if autenticated ', async () => {
     const agent = request.agent(app);
     const user = await UserService.create({ ...sampleUser });
-    console.log(user);
+
     await agent
       .post('/api/v1/users/sessions')
       .send({ email: 'test2@test.com', password: '12345' });
@@ -63,6 +59,43 @@ describe('users routes', () => {
     expect(resp.status).toEqual(200);
   });
 
+  it('GET api/v1/users should return 401 if user is not authenticated', async () => {
+    const agent = request.agent(app);
+    const user = await UserService.create({ ...sampleUser });
+
+    await agent
+      .post('/api/v1/users')
+      .send({ email: 'test2@test.com', password: '12345' });
+
+    const resp = await agent.get('/api/v1/users');
+    expect(resp.status).toEqual(401);
+  });
+
+  // it('GET api/v1/users/ should return 401 if user is not authenticated', async () => {
+  //   const agent = request.agent(app);
+  //   const user = await UserService.create({ ...sampleUser });
+
+  //   await agent
+  //     .post('/api/v1/users/secrets')
+  //     .send({ email: 'test2@test.com', password: '12345' });
+
+  //   const resp = await agent.get('/api/v1/users/secrets');
+  //   expect(resp.status).toEqual(401);
+  // });
+
+  // const registerAndLogin = async () => {
+  //   const agent = request.agent(app);
+  //   const user = await UserService.create(admin);
+  //   await agent
+  //     .post('/api/v1/users/sessions')
+  //     .send({ email: 'admin', password: 'admin' });
+  //   return [agent, user];
+  // };
+
+  // it('GET /api/v1/users/secrets should return the current user if authenticated and authorized', async () => {
+  //   const [agent] = await registerAndLogin();
+  //   const resp = await agent.post('/api/v1/users/secrets');
+  // });
   afterAll(() => {
     pool.end();
   });
