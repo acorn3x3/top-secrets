@@ -48,7 +48,7 @@ describe('users routes', () => {
     expect(resp.status).toEqual(401);
   });
 
-  it('GET /api/v1/users/secrets should return the current user if autenticated ', async () => {
+  it('GET /api/v1/users/secrets should return the current user if authenticated ', async () => {
     const agent = request.agent(app);
     const user = await UserService.create({ ...sampleUser });
 
@@ -59,16 +59,16 @@ describe('users routes', () => {
     expect(resp.status).toEqual(200);
   });
 
-  it('GET api/v1/users should return 401 if user is not authenticated', async () => {
+  it('GET api/v1/users should return 403 if user is not authenticated and authorized', async () => {
     const agent = request.agent(app);
     const user = await UserService.create({ ...sampleUser });
 
     await agent
-      .post('/api/v1/users')
+      .post('/api/v1/users/sessions')
       .send({ email: 'test2@test.com', password: '12345' });
 
     const resp = await agent.get('/api/v1/users');
-    expect(resp.status).toEqual(401);
+    expect(resp.status).toEqual(403);
   });
 
   // it('GET api/v1/users/ should return 401 if user is not authenticated', async () => {
