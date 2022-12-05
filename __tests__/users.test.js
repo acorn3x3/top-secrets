@@ -3,7 +3,6 @@ const setup = require('../data/setup');
 const app = require('../lib/app');
 const request = require('supertest');
 const UserService = require('../lib/services/UserService');
-// const { User } = require('../lib/models/User');
 
 const sampleUser = {
   first_name: 'Test',
@@ -11,17 +10,6 @@ const sampleUser = {
   email: 'test2@test.com',
   password: '12345',
 };
-// const admin = {
-//   first_name: 'admin',
-//   last_name: 'admin',
-//   email: 'admin',
-//   password: 'admin',
-// };
-
-// const sampleSecret = {
-//   title: 'sample',
-//   description: 'sample sample',
-// };
 
 describe('users routes', () => {
   beforeEach(() => {
@@ -55,9 +43,9 @@ describe('users routes', () => {
 
   it('GET api/v1/users/secrets should return 403 if user is not authenticated and authorized', async () => {
     const agent = request.agent(app);
+    // eslint-disable-next-line no-unused-vars
     const user = await UserService.create({ ...sampleUser });
 
-    console.log(user);
     await agent
       .post('/api/v1/users/sessions')
       .send({ email: 'test2@test.com', password: '12345' });

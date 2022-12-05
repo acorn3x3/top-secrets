@@ -3,8 +3,6 @@ const setup = require('../data/setup');
 const app = require('../lib/app');
 const request = require('supertest');
 const UserService = require('../lib/services/UserService');
-const { Secret } = require('../lib/models/Secret');
-const { User } = require('../lib/models/User');
 
 const admin = {
   first_name: 'admin',
@@ -18,10 +16,6 @@ const sampleUser = {
   email: 'test2@test.com',
   password: '12345',
 };
-const sampleSecret = {
-  title: 'look at me being a sample',
-  description: 'wow such empty, much lonely',
-};
 
 const registerAndLogin = async () => {
   const agent = request.agent(app);
@@ -32,12 +26,14 @@ const registerAndLogin = async () => {
   return [agent, user];
 };
 
-describe('secrets routes', () => {
+describe('secrets', () => {
   beforeEach(() => {
     return setup(pool);
   });
+
   it('GET /api/v1/secrets should return a list of secrets if authd ', async () => {
     const agent = request.agent(app);
+    // eslint-disable-next-line no-unused-vars
     const user = await UserService.create({ ...admin });
 
     await agent
