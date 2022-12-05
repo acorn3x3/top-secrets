@@ -9,3 +9,18 @@ CREATE TABLE users (
     EMAIL TEXT NOT NULL unique,
     password_hash TEXT NOT NULL
 );
+
+DROP TABLE IF EXISTS secrets;
+
+CREATE TABLE secrets (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    createdAt TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP);
+
+    INSERT INTO secrets (
+        title,
+        description)
+
+        VALUES
+        ('i shot out the window', 'my brother is innocent');
