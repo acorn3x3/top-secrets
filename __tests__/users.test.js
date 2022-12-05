@@ -3,7 +3,7 @@ const setup = require('../data/setup');
 const app = require('../lib/app');
 const request = require('supertest');
 const UserService = require('../lib/services/UserService');
-const { User } = require('../lib/models/User');
+// const { User } = require('../lib/models/User');
 
 const sampleUser = {
   first_name: 'Test',
@@ -11,17 +11,17 @@ const sampleUser = {
   email: 'test2@test.com',
   password: '12345',
 };
-const admin = {
-  first_name: 'admin',
-  last_name: 'admin',
-  email: 'admin',
-  password: 'admin',
-};
+// const admin = {
+//   first_name: 'admin',
+//   last_name: 'admin',
+//   email: 'admin',
+//   password: 'admin',
+// };
 
-const sampleSecret = {
-  title: 'sample',
-  description: 'sample sample',
-};
+// const sampleSecret = {
+//   title: 'sample',
+//   description: 'sample sample',
+// };
 
 describe('users routes', () => {
   beforeEach(() => {
@@ -53,17 +53,6 @@ describe('users routes', () => {
     expect(resp.status).toEqual(401);
   });
 
-  // it('GET /api/v1/users/secrets should return the current user if authenticated ', async () => {
-  //   const agent = request.agent(app);
-  //   const user = await UserService.create({ ...sampleUser });
-
-  //   await agent
-  //     .post('/api/v1/users/sessions')
-  //     .send({ email: 'test2@test.com', password: '12345' });
-  //   const resp = await agent.get('/api/v1/users/secrets');
-  //   expect(resp.status).toEqual(200);
-  // });
-
   it('GET api/v1/users/secrets should return 403 if user is not authenticated and authorized', async () => {
     const agent = request.agent(app);
     const user = await UserService.create({ ...sampleUser });
@@ -75,42 +64,16 @@ describe('users routes', () => {
     const resp = await agent.get('/api/v1/users/secrets');
     expect(resp.status).toEqual(403);
   });
+  it('DELETE /api/v1/users/sessions logs out a user', async () => {
+    const agent = request.agent(app);
 
-  // it('GET /api/v1/secrets should return a list of secrets if authd and authd', async () => {
-  //   const agent = request.agent(app);
-  //   const user = await UserService.create({ ...admin });
-  //   await agent
-  //     .post('/api/v1/users/sessions')
-  //     .send({ email: 'admin', password: 'admin' });
+    await agent
+      .post('/api/v1/users/sessions')
+      .send({ email: 'test2@test.com', password: '12345' });
 
-  //   const resp = await agent.get('/api/v1/secrets');
-  //   expect(resp.status).toEqual(200);
-
-  // it('GET api/v1/users/ should return 401 if user is not authenticated', async () => {
-  //   const agent = request.agent(app);
-  //   const user = await UserService.create({ ...sampleUser });
-
-  //   await agent
-  //     .post('/api/v1/users/secrets')
-  //     .send({ email: 'test2@test.com', password: '12345' });
-
-  //   const resp = await agent.get('/api/v1/users/secrets');
-  //   expect(resp.status).toEqual(401);
-  // });
-
-  // const registerAndLogin = async () => {
-  //   const agent = request.agent(app);
-  //   const user = await UserService.create(admin);
-  //   await agent
-  //     .post('/api/v1/users/sessions')
-  //     .send({ email: 'admin', password: 'admin' });
-  //   return [agent, user];
-  // };
-
-  // it('GET /api/v1/users/secrets should return the current user if authenticated and authorized', async () => {
-  //   const [agent] = await registerAndLogin();
-  //   const resp = await agent.post('/api/v1/users/secrets');
-  // });
+    const resp = await agent.delete('/api/v1/users/sessions');
+    expect(resp.status).toBe(204);
+  });
   afterAll(() => {
     pool.end();
   });
