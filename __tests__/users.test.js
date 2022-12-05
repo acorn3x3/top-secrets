@@ -3,12 +3,13 @@ const setup = require('../data/setup');
 //const request = require('supertest');
 const app = require('../lib/app');
 const request = require('supertest');
+const UserService = require('../lib/services/UserService');
 //const UserService = require('../lib/services/UserService');
 
 const sampleUser = {
   first_name: 'Test',
   last_name: 'Testerson',
-  email: 'test@test.com',
+  email: 'test2@test.com',
   password: '12345',
 };
 
@@ -28,6 +29,13 @@ describe('users routes', () => {
       last_name,
       email,
     });
+  });
+  it('POST /api/v1/sessions signs in an existing user', async () => {
+    await request(app).post('/api/v1/users').send(sampleUser);
+    const resp = await request(app)
+      .post('/api/v1/users/sessions')
+      .send({ email: 'test2@test.com', password: '12345' });
+    expect(resp.status).toEqual(200);
   });
 
   afterAll(() => {
